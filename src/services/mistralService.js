@@ -12,7 +12,7 @@ const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:300
  */
 export const analyzeIssue = async (issueData) => {
   try {
-    const response = await fetch(`${API_ENDPOINT}/analyze`, {
+    const response = await fetch(`${API_ENDPOINT}/api/analyze`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -78,11 +78,6 @@ export const analyzeIssueLocal = (issueData) => {
  * @returns {Promise<string>} - The determined department
  */
 export const determineRootDepartment = async (issueData) => {
-  // If running in development mode without API_ENDPOINT, use local analysis
-  if (!API_ENDPOINT || API_ENDPOINT === 'http://localhost:3001') {
-    return analyzeIssueLocal(issueData);
-  }
-  
   try {
     // Try using the API
     return await analyzeIssue(issueData);

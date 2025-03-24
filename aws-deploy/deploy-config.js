@@ -7,12 +7,32 @@
 
 // S3 Configuration
 exports.s3Config = {
-  bucketName: 'prism-app-beta', // Change this to a unique bucket name
+  bucketName: 'prism-beta.app', // Updated to match domain name
   region: 'us-east-1',
   indexDocument: 'index.html',
   errorDocument: 'index.html',
   // Set distribution to public access for website hosting
   publicAccess: true
+};
+
+// CloudFront Configuration
+exports.cloudFrontConfig = {
+  comment: 'PRISM Beta Distribution',
+  defaultRootObject: 'index.html',
+  enabled: true,
+  priceClass: 'PriceClass_100', // Use only North America and Europe edge locations to minimize costs
+  customDomain: {
+    domainName: 'prism-beta.app',
+    alternateNames: ['www.prism-beta.app']
+  },
+  // Configure error pages
+  custom404: '/404.html',
+  customError: {
+    errorCachingMinTtl: 300,
+    errorCode: 404,
+    responseCode: 404,
+    responsePage: '/404.html'
+  }
 };
 
 // API Gateway Configuration
@@ -23,7 +43,7 @@ exports.apiGatewayConfig = {
   corsEnabled: true,
   // Configure CORS for your frontend domain
   corsConfiguration: {
-    allowOrigins: ['*'], // Update with your S3 website URL in production
+    allowOrigins: ['https://prism-beta.app', 'https://www.prism-beta.app'],
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: [
       'Content-Type',

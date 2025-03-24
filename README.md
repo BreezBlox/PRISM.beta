@@ -85,4 +85,52 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - Built by BreezBlox
-- Powered by Mistral AI 
+- Powered by Mistral AI
+
+## Backend for API Key Security
+
+This project now includes a backend service to securely handle API keys. This prevents exposing sensitive keys in the frontend code.
+
+### Running the Application
+
+To run the app locally with the backend:
+
+1. Clone this repository
+2. Create a `.env` file based on `.env.example` and add your Mistral API key
+3. Install dependencies:
+   ```
+   npm install
+   ```
+4. Start the development server (frontend + backend):
+   ```
+   npm run dev
+   ```
+
+### Deployment Options
+
+#### Option 1: AWS Lambda (existing setup)
+
+The AWS Lambda function in `aws-deploy/lambda/analyze.js` will continue to work with the updated frontend. Make sure to set environment variables in the Lambda console.
+
+#### Option 2: Netlify Functions
+
+This project now includes Netlify Functions integration:
+
+1. Deploy to Netlify
+2. Set the `MISTRAL_API_KEY` environment variable in the Netlify dashboard
+3. The serverless function at `netlify/functions/analyze.js` will handle API requests
+
+#### Option 3: Express Server
+
+For custom server deployments:
+
+1. Deploy the frontend files (from the `build` directory)
+2. Deploy the Express server (`server.js`)
+3. Set environment variables on your server
+
+### Environment Variables
+
+- `MISTRAL_API_KEY`: Your Mistral API key (backend only)
+- `FRONTEND_URL`: URL of your frontend (for CORS, backend only)
+- `PORT`: Port for the Express server (backend only, default: 3001)
+- `REACT_APP_API_ENDPOINT`: URL of your backend API (frontend only) 

@@ -6,7 +6,16 @@
       "Effect": "Allow",
       "Principal": "*",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::prism-app-beta/*"
+      "Resource": "arn:aws:s3:::prism-beta.app/*"
+    },
+    {
+      "Sid": "CloudFrontAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::prism-beta.app/*"
     }
   ]
 } 

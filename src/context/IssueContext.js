@@ -53,11 +53,15 @@ export const IssueProvider = ({ children }) => {
       // Use the Mistral API or fallback to determine the root department
       const rootDepartment = await determineRootDepartment(issueData);
       
+      // Ensure isQcCheckpoint is properly set as a boolean
+      const isQcCheckpoint = !!issueData.isQcCheckpoint;
+      
       const newIssue = {
         id: Date.now().toString(),
         date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }),
         rootDepartment,
         ...issueData,
+        isQcCheckpoint, // Ensure this is properly set as a boolean
       };
       
       setIssues(prevIssues => [...prevIssues, newIssue]);
@@ -71,6 +75,7 @@ export const IssueProvider = ({ children }) => {
         date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }),
         rootDepartment: issueData.department,
         ...issueData,
+        isQcCheckpoint: !!issueData.isQcCheckpoint, // Ensure this is properly set as a boolean
       };
       
       setIssues(prevIssues => [...prevIssues, newIssue]);
@@ -117,6 +122,19 @@ export const IssueProvider = ({ children }) => {
     if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
       setIssues([]);
       sessionStorage.removeItem('prism_issues');
+    }
+  };
+
+  // Delete a single issue
+  const deleteIssue = (issueId) => {
+    if (window.confirm('Are you sure you want to delete this issue? This cannot be undone.')) {
+      setIssues(prevIssues => prevIssues.filter(issue => 
+        issue.id !== issueId && issue.jobNumber !== issueId
+      ));
+      
+      if (window.showToast) {
+        window.showToast('Issue deleted successfully', 'success');
+      }
     }
   };
 
@@ -263,6 +281,7 @@ export const IssueProvider = ({ children }) => {
         issues,
         addIssue,
         contestIssue,
+        deleteIssue,
         clearIssues,
         exportIssues,
         getIssuesByDepartment,

@@ -1,6 +1,8 @@
 {
   "short_name": "PRISM",
   "name": "PRISM.beta - Production Root Issue Sorting Mechanism",
+  "start_url": "https://prism-beta.app",
+  "scope": "/",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,7 +20,6 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
   "display": "standalone",
   "theme_color": "#121212",
   "background_color": "#121212",
