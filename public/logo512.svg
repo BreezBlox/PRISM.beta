@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="512" height="512" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7b68ee" />
+      <stop offset="50%" stop-color="#9370DB" />
+      <stop offset="100%" stop-color="#8a2be2" />
+    </linearGradient>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6a5acd" />
+      <stop offset="50%" stop-color="#4b0082" />
+      <stop offset="100%" stop-color="#483d8b" />
+    </linearGradient>
+    <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9370DB" />
+      <stop offset="50%" stop-color="#8a2be2" />
+      <stop offset="100%" stop-color="#7b68ee" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background hexagon -->
+  <polygon points="32,4 60,18 60,46 32,60 4,46 4,18" fill="#121212" />
+  
+  <!-- Prism hexagons -->
+  <g transform="translate(12, 8) scale(0.7)">
+    <polygon points="32,4 60,18 60,46 32,60 4,46 4,18" fill="url(#gradient2)" />
+  </g>
+  
+  <g transform="translate(4, 20) scale(0.7)">
+    <polygon points="32,4 60,18 60,46 32,60 4,46 4,18" fill="url(#gradient3)" />
+  </g>
+  
+  <g transform="translate(20, 0) scale(0.7)">
+    <polygon points="32,4 60,18 60,46 32,60 4,46 4,18" fill="url(#gradient1)" />
+  </g>
+</svg> 
