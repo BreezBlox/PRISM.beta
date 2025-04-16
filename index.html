@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="alternate icon" href="/favicon.ico" type="image/x-icon"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#121212"/><meta name="description" content="PRISM.beta - Production Root Issue Sorting Mechanism"/><link rel="apple-touch-icon" href="/logo192.svg"/><link rel="manifest" href="/manifest.json"/><title>PRISM.beta</title><script defer="defer" src="./static/js/main.41ba4222.js"></script><link href="./static/css/main.1059e796.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div>
+<!-- Load main app script first -->
+
+<!-- Then load department management scripts -->
+<script src="./static/js/department-manager.js"></script>
+<script>
+  // Ensure global variable is updated right when the page loads
+  if (typeof departmentManager !== 'undefined') {
+    // Force a fresh read from localStorage
+    window.PRISM_DEPARTMENTS = departmentManager.loadDepartments();
+    console.log('Initializing global departments:', window.PRISM_DEPARTMENTS);
+  }
+</script>
+
+<!-- Add settings link to navbar if it exists, or create a floating settings button -->
+<div id="settings-link-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+  <!-- Removed onclick, href restored temporarily, will be handled by script -->
+  <a href="./settings.html" id="floating-settings-link" title="Settings" style="display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; background-color: #7b68ee; color: white; border-radius: 50%; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+  </a>
+</div>
+<script>
+  // Temporarily disable service worker
+  /*
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => {
+          console.log('Service Worker registered with scope:', reg.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+  */
+  
+  window.showToast = function(message, type = 'info') {
+    const container = document.querySelector('.toast-container') || (() => {
+      const el = document.createElement('div');
+      el.className = 'toast-container';
+      document.body.appendChild(el);
+      return el;
+    })();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        container.removeChild(toast);
+        if (container.children.length === 0) {
+          document.body.removeChild(container);
+        }
+      }, 300);
+    }, 3000);
+  };
+</script>
+
+<!-- Ensure custom logic runs after DOM content loaded -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Try to integrate settings link into existing nav if it exists
+    const navbar = document.querySelector('nav, .navbar, .nav, header');
+    if (navbar) {
+      // If navbar exists, try to add settings link to it instead of the floating button
+      const settingsLinkCont = document.getElementById('settings-link-container');
+      if (settingsLinkCont) {
+        settingsLinkCont.style.display = 'none';
+      }
+      
+      // Check if the navbar already has the settings link
+      const hasSettingsLink = Array.from(navbar.querySelectorAll('a')).some(
+        link => link.href.includes('settings.html')
+      );
+      
+      if (!hasSettingsLink) {
+        // Try to find a suitable container in the navbar
+        const navContainer = navbar.querySelector('ul, .nav-items, .nav-links, .menu-items') || navbar;
+        
+        const settingsLink = document.createElement('a');
+        // Set href, but navigation will be handled by the new listener below
+        settingsLink.href = './settings.html'; 
+        settingsLink.id = 'nav-settings-link'; // Add ID for easy selection
+        settingsLink.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Settings
+        `;
+        
+        // Adapt to existing navbar style
+        if (navContainer.tagName === 'UL') {
+          const li = document.createElement('li');
+          li.appendChild(settingsLink);
+          navContainer.appendChild(li);
+        } else {
+          navContainer.appendChild(settingsLink);
+        }
+      }
+    }
+    
+    // Initialize department selectors if the function exists
+    /*
+    if (typeof initDepartmentSelectors === 'function' && typeof departmentManager !== 'undefined') {
+      // Force departmentManager to refresh from localStorage first
+      departmentManager.loadDepartments();
+      console.log('Department List:', departmentManager.getAllDepartments());
+      initDepartmentSelectors();
+    }
+    */
+    
+    // Add robust click handler for settings link
+    const finalSettingsLink = document.getElementById('nav-settings-link') || document.getElementById('floating-settings-link');
+    if (finalSettingsLink) {
+      finalSettingsLink.addEventListener('click', function(event) {
+        event.preventDefault(); // Stop default link behavior
+        event.stopPropagation(); // Stop event bubbling
+        console.log('Settings link clicked, attempting navigation...');
+        window.location.assign('./settings.html'); // Force full page load
+      });
+    }
+
+    // --- START: Force update React dropdown --- 
+    try {
+      if (typeof departmentManager !== 'undefined') {
+        const correctDepartments = departmentManager.getAllDepartments();
+        const reactDropdown = document.getElementById('department');
+
+        if (reactDropdown && reactDropdown.tagName === 'SELECT') {
+          console.log('Found React department dropdown, attempting to update...');
+          // Store the current value if needed, though it might reset
+          const currentValue = reactDropdown.value;
+          
+          // Clear existing options (added by React)
+          reactDropdown.innerHTML = ''; 
+
+          // Add the default placeholder option
+          const placeholderOption = document.createElement('option');
+          placeholderOption.value = '';
+          placeholderOption.textContent = 'Select department';
+          placeholderOption.disabled = true; // Optional: make it non-selectable
+          // placeholderOption.selected = true; // Make it selected by default
+          reactDropdown.appendChild(placeholderOption);
+
+          // Add the correct departments
+          correctDepartments.forEach(deptTitle => {
+            const option = document.createElement('option');
+            option.value = deptTitle;
+            option.textContent = deptTitle;
+            reactDropdown.appendChild(option);
+          });
+
+          // Try to restore the previous value if it still exists in the new list
+          if (correctDepartments.includes(currentValue)) {
+            reactDropdown.value = currentValue;
+          } else {
+            // If previous value is gone, select the placeholder
+             reactDropdown.value = ''; 
+          }
+          console.log('React department dropdown updated successfully.');
+        } else {
+           // Add a small delay and retry, in case React renders later
+           setTimeout(() => {
+               const delayedDropdown = document.getElementById('department');
+               if (delayedDropdown && delayedDropdown.tagName === 'SELECT') {
+                  // (Repeat the update logic from above - simplified here for brevity)
+                  console.log('Found React dropdown after delay, updating...');
+                  // Clear existing options
+                  delayedDropdown.innerHTML = '';
+                  // Add placeholder
+                  const placeholder = document.createElement('option');
+                  placeholder.value = ''; placeholder.textContent = 'Select department'; placeholder.disabled = true;
+                  delayedDropdown.appendChild(placeholder);
+                  // Add correct departments
+                  const depts = departmentManager.getAllDepartments();
+                  depts.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; delayedDropdown.appendChild(o); });
+                  delayedDropdown.value = ''; // Reset selection
+               } else {
+                   console.warn('Could not find the React department dropdown (id=department) even after delay.');
+               }
+           }, 500); // Wait 500ms
+        }
+      } else {
+        console.warn('departmentManager not found, cannot update React dropdown.');
+      }
+    } catch (error) {
+       console.error('Error updating React department dropdown:', error);
+    }
+    // --- END: Force update React dropdown ---
+
+  });
+</script>
+</body></html>

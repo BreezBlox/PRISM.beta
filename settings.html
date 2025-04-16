@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#121212" />
+  <meta name="description" content="PRISM.beta - Settings" />
+  <link rel="apple-touch-icon" href="/logo192.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>PRISM.beta - Settings</title>
+  <!-- <script defer="defer" src="./static/js/main.41ba4222.js"></script> -->
+  <link href="./static/css/main.1059e796.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --accent: #7b68ee;
+      --accent-hover: #6a5acd;
+      --danger: #e53935;
+      --success: #43a047;
+      --warning: #fdd835;
+      --border: #333333;
+    }
+    
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+    }
+    
+    .settings-header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    
+    .settings-header .back-button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      padding: 8px 16px;
+      transition: color 0.2s;
+    }
+    
+    .settings-header .back-button:hover {
+      color: var(--text-primary);
+    }
+    
+    .settings-section {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .settings-section h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+    
+    /* Department list styles */
+    .department-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .department-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.2s;
+    }
+    
+    .department-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .department-item:last-child {
+      border-bottom: none;
+    }
+    
+    .department-item .title {
+      flex-grow: 1;
+    }
+    
+    .department-item .actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* Form styles */
+    .input-group {
+      margin-bottom: 20px;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 10px 12px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    /* Button styles */
+    .btn {
+      cursor: pointer;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--text-primary);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background-color: #c62828;
+    }
+    
+    .btn-icon {
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      color: var(--text-secondary);
+      border-radius: 4px;
+    }
+    
+    .btn-icon:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+    
+    .btn-text {
+      background: none;
+      color: var(--accent);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    .btn-text:hover {
+      background-color: rgba(123, 104, 238, 0.1);
+    }
+    
+    /* Form layout */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .department-form {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    
+    /* Modal styles */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    
+    .modal-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 25px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transform: translateY(-20px);
+      transition: transform 0.3s;
+    }
+    
+    .modal-backdrop.show .modal {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    
+    .modal-body {
+      margin-bottom: 20px;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    
+    /* Toast notification */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    
+    .toast {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      min-width: 200px;
+      max-width: 350px;
+      animation: slide-in 0.3s forwards;
+    }
+    
+    .toast.info {
+      border-left: 4px solid var(--accent);
+    }
+    
+    .toast.success {
+      border-left: 4px solid var(--success);
+    }
+    
+    .toast.error {
+      border-left: 4px solid var(--danger);
+    }
+    
+    .toast.hide {
+      animation: slide-out 0.3s forwards;
+    }
+    
+    @keyframes slide-in {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slide-out {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .settings-section {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root">
+    <div class="container">
+      <div class="settings-header">
+        <h1>Settings</h1>
+        <button class="back-button" onclick="window.location.replace('./index.html?refresh=' + new Date().getTime())">
+          ← Back to App
+        </button>
+      </div>
+      
+      <div class="settings-section">
+        <h2>Department Management</h2>
+        <p>Create and manage custom department titles for your organization.</p>
+        
+        <div id="departments-container">
+          <div id="department-list-container">
+            <ul class="department-list" id="department-list">
+              <!-- Department items will be inserted here dynamically -->
+              <li class="department-item">
+                <span class="title">Loading departments...</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="department-form" id="add-department-form">
+            <div class="input-group">
+              <label for="new-department">Add New Department</label>
+              <input 
+                type="text" 
+                id="new-department" 
+                placeholder="Enter department name" 
+                maxlength="50"
+              />
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-text" id="reset-departments">Reset to Defaults</button>
+              <button class="btn btn-primary" id="add-department">Add Department</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h2>Benchmarks</h2>
+        <p>This feature will be available in a future update.</p>
+      </div>
+      
+      <div class="settings-section">
+        <h2>About</h2>
+        <p>PRISM.beta - Production Root Issue Sorting Mechanism</p>
+        <p>Version: 2.0.4</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Edit Department Modal -->
+  <div class="modal-backdrop" id="edit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Department</h3>
+        <button class="btn-icon" id="close-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label for="edit-department-input">Department Name</label>
+          <input 
+            type="text" 
+            id="edit-department-input" 
+            placeholder="Enter department name" 
+            maxlength="50"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-text" id="cancel-edit">Cancel</button>
+        <button class="btn btn-primary" id="save-edit">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirmation Modal -->
+  <div class="modal-backdrop" id="confirm-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Confirm Action</h3>
+        <button class="btn-icon" id="close-confirm-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message">Are you sure you want to proceed?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-text" id="cancel-confirm">Cancel</button>
+        <button class="btn btn-danger" id="confirm-action">Confirm</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="./static/js/department-manager.js"></script>
+  <script>
+    // DOM Elements
+    const departmentList = document.getElementById('department-list');
+    const newDepartmentInput = document.getElementById('new-department');
+    const addDepartmentBtn = document.getElementById('add-department');
+    const resetDepartmentsBtn = document.getElementById('reset-departments');
+    
+    // Modal elements
+    const editModal = document.getElementById('edit-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const editDepartmentInput = document.getElementById('edit-department-input');
+    const saveEditBtn = document.getElementById('save-edit');
+    const cancelEditBtn = document.getElementById('cancel-edit');
+    
+    // Confirmation modal elements
+    const confirmModal = document.getElementById('confirm-modal');
+    const closeConfirmModalBtn = document.getElementById('close-confirm-modal');
+    const confirmMessageEl = document.getElementById('confirm-message');
+    const confirmActionBtn = document.getElementById('confirm-action');
+    const cancelConfirmBtn = document.getElementById('cancel-confirm');
+    
+    // State variables
+    let currentEditIndex = -1;
+    let currentConfirmCallback = null;
+    
+    // Initialize departments list
+    function renderDepartmentsList() {
+      const departments = departmentManager.getAllDepartments();
+      departmentList.innerHTML = '';
+      
+      if (departments.length === 0) {
+        const emptyItem = document.createElement('li');
+        emptyItem.className = 'department-item';
+        emptyItem.innerHTML = '<span class="title">No departments found. Add one or reset to defaults.</span>';
+        departmentList.appendChild(emptyItem);
+        return;
+      }
+      
+      departments.forEach((dept, index) => {
+        const li = document.createElement('li');
+        li.className = 'department-item';
+        
+        li.innerHTML = `
+          <span class="title">${dept}</span>
+          <div class="actions">
+            <button class="btn btn-icon edit-btn" data-index="${index}">✎</button>
+            <button class="btn btn-icon delete-btn" data-index="${index}">🗑</button>
+          </div>
+        `;
+        
+        departmentList.appendChild(li);
+      });
+      
+      // Add event listeners to new elements
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', handleEditClick);
+      });
+      
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', handleDeleteClick);
+      });
+    }
+    
+    // Handle department addition
+    function handleAddDepartment() {
+      if (!newDepartmentInput) return;
+      
+      const newTitle = newDepartmentInput.value.trim();
+      
+      if (!newTitle) {
+        // showToast('Please enter a department name', 'error');
+        return;
+      }
+      
+      const success = departmentManager.addDepartment(newTitle);
+      
+      if (success) {
+        // showToast(`Added department: ${newTitle}`, 'success');
+        newDepartmentInput.value = '';
+        renderDepartmentsList();
+      } else {
+        // showToast('Department already exists or invalid name', 'error');
+      }
+    }
+    
+    // Handle edit button click
+    function handleEditClick(e) {
+      if (!departmentList) return;
+      
+      const index = parseInt(e.currentTarget.dataset.index);
+      const departments = departmentManager.getAllDepartments();
+      
+      if (index >= 0 && index < departments.length) {
+        currentEditIndex = index;
+        if (editDepartmentInput) editDepartmentInput.value = departments[index];
+        showModal(editModal);
+      }
+    }
+    
+    // Handle delete button click
+    function handleDeleteClick(e) {
+      if (!e || !e.currentTarget || !e.currentTarget.dataset) return; // Null check
+      const index = parseInt(e.currentTarget.dataset.index);
+      if (isNaN(index)) return; // Check if index is valid
+    
+      currentConfirmCallback = () => {
+        const success = departmentManager.removeDepartment(index);
+        renderDepartmentsList();
+        // if (success) {
+        //   showToast('Department deleted successfully.', 'success');
+        // } else {
+        //   showToast('Failed to delete department.', 'error');
+        // }
+      };
+      const modalText = document.getElementById('confirmModalText');
+      if (modalText) modalText.textContent = 'Are you sure you want to delete this department?';
+      showModal(confirmModal);
+    }
+    
+    // Handle department edit save
+    function handleEditSave() {
+      if (!editDepartmentInput) return;
+      
+      const newTitle = editDepartmentInput.value.trim();
+      
+      if (!newTitle) {
+        // showToast('Please enter a department name', 'error');
+        return;
+      }
+      
+      if (currentEditIndex !== -1) {
+        const success = departmentManager.updateDepartment(currentEditIndex, newTitle);
+        
+        if (success) {
+          // showToast(`Updated department to: ${newTitle}`, 'success');
+          hideModal(editModal);
+          renderDepartmentsList();
+        } else {
+          // showToast('Department already exists or invalid name', 'error');
+        }
+      }
+    }
+    
+    // Handle reset to defaults
+    function handleResetDepartments() {
+      if (!confirmMessageEl) return;
+      
+      confirmMessageEl.textContent = 'Are you sure you want to reset to default departments? This will remove all custom departments.';
+      
+      currentConfirmCallback = () => {
+        const success = departmentManager.resetToDefaults();
+        
+        if (success) {
+          // showToast('Reset to default departments', 'success');
+          renderDepartmentsList();
+        } else {
+          // showToast('Failed to reset departments', 'error');
+        }
+      };
+      
+      showModal(confirmModal);
+    }
+    
+    // Modal helpers
+    function showModal(modal) {
+      if (modal) modal.classList.add('show');
+    }
+    
+    function hideModal(modal) {
+      if (modal) modal.classList.remove('show');
+    }
+    
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // First ensure the departmentManager is available
+      if (typeof departmentManager === 'undefined') {
+        console.error('Department manager not loaded');
+        return;
+      }
+      
+      // Initialize list render
+      renderDepartmentsList();
+      
+      // Re-bind all event listeners to ensure they're connected
+      if (addDepartmentBtn) addDepartmentBtn.addEventListener('click', handleAddDepartment);
+      if (resetDepartmentsBtn) resetDepartmentsBtn.addEventListener('click', handleResetDepartments);
+      
+      // Modal event listeners
+      if (closeModalBtn) closeModalBtn.addEventListener('click', () => hideModal(editModal));
+      if (saveEditBtn) saveEditBtn.addEventListener('click', handleEditSave);
+      if (cancelEditBtn) cancelEditBtn.addEventListener('click', () => hideModal(editModal));
+      
+      // Confirmation modal event listeners
+      if (closeConfirmModalBtn) closeConfirmModalBtn.addEventListener('click', () => hideModal(confirmModal));
+      if (cancelConfirmBtn) cancelConfirmBtn.addEventListener('click', () => hideModal(confirmModal));
+      
+      if (confirmActionBtn) confirmActionBtn.addEventListener('click', () => {
+        if (typeof currentConfirmCallback === 'function') {
+          currentConfirmCallback(); // Execute the delete/reset logic
+          currentConfirmCallback = null; // Reset callback
+        }
+        hideModal(confirmModal); // Hide modal after action
+      });
+      
+      // Handle enter key in input fields
+      if (newDepartmentInput) newDepartmentInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          handleAddDepartment();
+        }
+      });
+      
+      if (editDepartmentInput) editDepartmentInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          handleEditSave();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found - PRISM.beta</title>
+  <style>
+    :root {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --accent: #7b68ee;
+    }
+    
+    body {
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 600px;
+      padding: 20px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo span {
+      color: var(--accent);
+    }
+    
+    .prism-icons {
+      margin-right: 16px;
+      position: relative;
+      width: 50px;
+      height: 40px;
+    }
+    
+    .prism-icon {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+    }
+    
+    .prism-icon::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+    
+    .prism-icon:nth-child(1) {
+      top: 0;
+      left: 20px;
+      z-index: 3;
+    }
+    
+    .prism-icon:nth-child(1)::before {
+      background: linear-gradient(45deg, var(--accent), #9370DB, #8a2be2);
+    }
+    
+    .prism-icon:nth-child(2) {
+      top: 15px;
+      left: 0;
+      z-index: 1;
+      transform: scale(0.85);
+    }
+    
+    .prism-icon:nth-child(2)::before {
+      background: linear-gradient(45deg, #6a5acd, #4b0082, #483d8b);
+    }
+    
+    .prism-icon:nth-child(3) {
+      top: 12px;
+      left: 35px;
+      z-index: 2;
+      transform: scale(0.75);
+    }
+    
+    .prism-icon:nth-child(3)::before {
+      background: linear-gradient(45deg, #9370DB, #8a2be2, #9932cc);
+    }
+    
+    .card {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    
+    .error-code {
+      font-size: 72px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0;
+      line-height: 1;
+    }
+    
+    button {
+      background-color: var(--accent);
+      color: var(--text-primary);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      margin-top: 20px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    button:hover {
+      background-color: #6a5acd;
+    }
+    
+    @media (max-width: 576px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .card {
+        padding: 20px;
+      }
+      
+      .logo h1 {
+        font-size: 24px;
+      }
+      
+      .error-code {
+        font-size: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <div class="prism-icons">
+        <div class="prism-icon"></div>
+        <div class="prism-icon"></div>
+        <div class="prism-icon"></div>
+      </div>
+      <h1>PRISM.<span>beta</span></h1>
+    </div>
+    
+    <div class="card">
+      <h1 class="error-code">404</h1>
+      <h2>Page Not Found</h2>
+      <p>The page you are looking for doesn't exist or has been moved.</p>
+      <a href="/" style="text-decoration: none;">
+        <button>Return to Home</button>
+      </a>
+    </div>
+  </div>
+</body>
+</html> 
