@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rework Management</title>
+  <style>
+    body { font-family: sans-serif; background: #f6f6fa; margin: 0; padding: 0; }
+    .container { max-width: 800px; margin: 40px auto; background: #fff; padding: 24px 32px 32px 32px; border-radius: 12px; box-shadow: 0 2px 12px #0001; }
+    h1 { text-align: center; }
+    form { margin-bottom: 32px; }
+    label { display: block; margin: 12px 0 4px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 7px 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 8px; }
+    button { background: #7b68ee; color: #fff; border: none; padding: 10px 22px; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+    button:disabled { background: #ccc; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f0f0ff; }
+    .actions { display: flex; gap: 8px; }
+    .edit-row { background: #ffffe0; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Rework Management</h1>
+    <form id="reworkForm">
+      <input type="hidden" name="id" id="reworkId">
+      <label>Date</label>
+      <input name="date" id="date" type="date" required>
+      <label>Reason</label>
+      <input name="reason" id="reason" required>
+      <label>Item Affected</label>
+      <input name="item_affected" id="item_affected" required>
+      <label>Department</label>
+      <input name="department" id="department" required>
+      <label>Cost</label>
+      <input name="cost" id="cost" type="number" step="0.01" required>
+      <label>Time Spent (hours)</label>
+      <input name="time_spent" id="time_spent" type="number" step="0.1" required>
+      <label>Notes</label>
+      <textarea name="notes" id="notes"></textarea>
+      <button type="submit" id="submitBtn">Add Rework</button>
+      <span id="formMessage"></span>
+    </form>
+    <h2>Reworks List</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <div></div>
+      <button id="exportBtn" onclick="exportReworks()" style="background-color: #4CAF50;">Export to CSV</button>
+    </div>
+    <table id="reworksTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Reason</th>
+      <th>Item</th>
+      <th>Department</th>
+      <th>Cost</th>
+      <th>Time</th>
+      <th>Notes</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="reworksTableBody"></tbody>
+</table>
+  </div>
+  <script>
+    const apiUrl = '/api/reworks';
+    const form = document.getElementById('reworkForm');
+    const tableBody = document.getElementById('reworksTableBody');
+    const formMessage = document.getElementById('formMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    let editingId = null;
+
+    async function fetchReworks() {
+  const res = await fetch(apiUrl);
+  const data = await res.json();
+  console.log('Fetched reworks:', data); // Debug log
+  tableBody.innerHTML = '';
+  data.forEach(row => {
+  console.log('Rendering row:', row); // Debug log
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${row.date ? row.date.slice(0,10) : ''}</td>
+    <td>${row.reason}</td>
+    <td>${row.item_affected}</td>
+    <td>${row.department}</td>
+    <td>$${(parseFloat(row.cost) || 0).toFixed(2)}</td>
+    <td>${row.time_spent}</td>
+    <td>${row.notes || ''}</td>
+    <td class="actions">
+      <button onclick="editRework(${row.id})">Edit</button>
+      <button onclick="deleteRework(${row.id})">Delete</button>
+    </td>
+  `;
+  tr.id = 'row-' + row.id;
+  tableBody.appendChild(tr);
+});
+    }
+
+    window.editRework = function(id) {
+      const tr = document.getElementById('row-' + id);
+      tr.classList.add('edit-row');
+      fetch(apiUrl + '?id=' + id)
+        .then(res => res.json())
+        .then(rows => {
+          const row = Array.isArray(rows) ? rows.find(r => r.id === id) : rows;
+          if (!row) return;
+          editingId = id;
+          document.getElementById('reworkId').value = row.id;
+          document.getElementById('date').value = row.date ? row.date.slice(0,10) : '';
+          document.getElementById('reason').value = row.reason;
+          document.getElementById('item_affected').value = row.item_affected;
+          document.getElementById('department').value = row.department;
+          document.getElementById('cost').value = row.cost;
+          document.getElementById('time_spent').value = row.time_spent;
+          document.getElementById('notes').value = row.notes || '';
+          submitBtn.textContent = 'Update Rework';
+        });
+    }
+
+    window.deleteRework = async function(id) {
+      if (!confirm('Are you sure you want to delete this rework?')) return;
+      const btn = document.querySelector(`#row-${id} button[onclick^='deleteRework']`);
+      if (btn) btn.disabled = true;
+      formMessage.textContent = '';
+      try {
+        const res = await fetch(apiUrl + '/' + id, { method: 'DELETE' });
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error('Failed to delete: ' + errText);
+        }
+        formMessage.textContent = 'Deleted!';
+        formMessage.className = 'success';
+        await fetchReworks();
+      } catch (err) {
+        formMessage.textContent = err.message;
+        formMessage.className = 'error';
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    };
+
+    window.exportReworks = function() {
+      // Redirect to the export endpoint which will trigger file download
+      window.location.href = apiUrl + '/export';
+    };
+
+    form.onsubmit = async function(e) {
+      e.preventDefault();
+      formMessage.textContent = '';
+      const data = {
+        date: form.date.value,
+        reason: form.reason.value,
+        item_affected: form.item_affected.value,
+        department: form.department.value,
+        cost: parseFloat(form.cost.value),
+        time_spent: parseFloat(form.time_spent.value),
+        notes: form.notes.value
+      };
+      let method = 'POST';
+      let url = apiUrl;
+      if (form.reworkId.value) {
+        // For editing, use PUT /api/reworks/:id
+        method = 'PUT';
+        url = apiUrl + '/' + form.reworkId.value;
+        data.id = form.reworkId.value;
+      }
+      submitBtn.disabled = true;
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error('Failed to submit: ' + errText);
+        }
+        formMessage.textContent = 'Saved!';
+        formMessage.className = 'success';
+        form.reset();
+        editingId = null;
+        submitBtn.textContent = 'Add Rework';
+        await fetchReworks();
+      } catch (err) {
+        formMessage.textContent = err.message;
+        formMessage.className = 'error';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    fetchReworks();
+  </script>
+</body>
+</html>
